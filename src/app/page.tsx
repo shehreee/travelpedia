@@ -13,7 +13,7 @@ export default async function HomePage() {
       <section className="bg-tp-navy pb-16 pt-10 text-white sm:pb-20 sm:pt-14">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-center text-sm font-medium uppercase tracking-widest text-tp-accent">
-            Northern Pakistan · Group departures Test
+            Northern Pakistan · Group departures
           </p>
           <h1 className="mx-auto mt-3 max-w-3xl text-center text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
             Find your next adventure — compare tours like on Booking and Agoda
