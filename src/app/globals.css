@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --tp-navy: #00224f;
+  --tp-blue: #006ce4;
+  --tp-blue-hover: #0057b8;
+  --tp-accent: #febb02;
+  --tp-accent-hover: #e9a800;
+  --tp-surface: #f5f7fa;
+  --tp-border: #e7eaf0;
+  --tp-text: #1a1a1a;
+  --tp-muted: #5c6b7a;
+}
+
+@theme inline {
+  --color-tp-navy: var(--tp-navy);
+  --color-tp-blue: var(--tp-blue);
+  --color-tp-blue-hover: var(--tp-blue-hover);
+  --color-tp-accent: var(--tp-accent);
+  --color-tp-accent-hover: var(--tp-accent-hover);
+  --color-tp-surface: var(--tp-surface);
+  --color-tp-border: var(--tp-border);
+  --color-tp-text: var(--tp-text);
+  --color-tp-muted: var(--tp-muted);
+  --font-sans: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--tp-surface);
+  color: var(--tp-text);
+}
