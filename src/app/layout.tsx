@@ -10,9 +10,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Travelpedia — Group tours in Northern Pakistan",
+  title: "Travelpedia — Tours in Northern Pakistan",
   description:
-    "Discover fixed-departure group tours. Compare operators and send inquiries — no booking fees, Phase 1.",
+    "Discover tours, compare operators, and send inquiries on Travelpedia.",
 };
 
 export default function RootLayout({

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Travelpedia — Technical overview</title>
+  <style>
+    @page { margin: 18mm; size: A4; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: #1a1a1a;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 2rem;
+    }
+    h1 { font-size: 1.55rem; margin: 0 0 0.5rem; font-family: system-ui, sans-serif; }
+    .meta { font-size: 0.9rem; color: #444; margin-bottom: 1.5rem; }
+    h2 {
+      font-size: 1.15rem;
+      font-family: system-ui, sans-serif;
+      margin: 1.75rem 0 0.6rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.2rem;
+    }
+    h3 { font-size: 1rem; font-family: system-ui, sans-serif; margin: 1.1rem 0 0.4rem; }
+    p { margin: 0.5rem 0; }
+    ul, ol { margin: 0.4rem 0 0.6rem; padding-left: 1.35rem; }
+    li { margin: 0.25rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10pt;
+      margin: 0.6rem 0 1rem;
+    }
+    th, td { border: 1px solid #bbb; padding: 0.35rem 0.5rem; text-align: left; vertical-align: top; }
+    th { background: #f0f0f0; font-family: system-ui, sans-serif; font-weight: 600; }
+    code, pre {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 9.5pt;
+    }
+    pre {
+      background: #f6f6f6;
+      border: 1px solid #ddd;
+      padding: 0.65rem 0.75rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .note { background: #f9f6ef; border-left: 4px solid #c9a227; padding: 0.5rem 0.75rem; margin: 0.75rem 0; }
+    @media print {
+      body { padding: 0; max-width: none; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Travelpedia — Technical overview</h1>
+<p class="meta"><strong>For:</strong> New web developers learning how this project works.</p>
+
+<h2>1. What the app does</h2>
+<p>Travelpedia is a tour marketplace: <strong>operators</strong> list trips, <strong>visitors</strong> browse active listings and send inquiries, and <strong>admins</strong> approve operators and tours before they go live.</p>
+
+<h2>2. Technology stack</h2>
+<table>
+  <thead><tr><th>Piece</th><th>What it is</th><th>Role here</th></tr></thead>
+  <tbody>
+    <tr><td>Next.js</td><td>React framework</td><td>Routes, pages, server logic</td></tr>
+    <tr><td>React</td><td>UI library</td><td>Components in the browser</td></tr>
+    <tr><td>TypeScript</td><td>Typed JavaScript</td><td>Used across the repo</td></tr>
+    <tr><td>Tailwind CSS</td><td>Utility CSS</td><td>Layout and styling</td></tr>
+    <tr><td>Supabase</td><td>Backend-as-a-service</td><td>PostgreSQL database, authentication, Row Level Security</td></tr>
+  </tbody>
+</table>
+<p>There is no separate custom API server in this repo: Next.js calls Supabase’s APIs using the official clients.</p>
+
+<h2>3. Where is the database?</h2>
+<p>The database is <strong>not</strong> a file in your project. It lives in the <strong>cloud</strong> on your Supabase project (PostgreSQL).</p>
+<ul>
+  <li>You manage tables and SQL in the Supabase Dashboard.</li>
+  <li>The app connects using <code>NEXT_PUBLIC_SUPABASE_URL</code> and <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code> in <code>.env.local</code> (see <code>.env.example</code> for variable names).</li>
+  <li>The anon key is public in the browser by design; <strong>Row Level Security (RLS)</strong> in Postgres defines who can read or write what.</li>
+</ul>
+<h3>Main tables</h3>
+<p>Defined in <code>supabase/migrations/001_initial_schema.sql</code>:</p>
+<ul>
+  <li><strong>profiles</strong> — one row per user; links to <code>auth.users</code>; stores <code>role</code> (operator/admin), <code>approval_status</code>, company info.</li>
+  <li><strong>tours</strong> — listings; <code>status</code> is pending / active / closed.</li>
+  <li><strong>inquiries</strong> — visitor messages about a tour.</li>
+</ul>
+
+<h2>4. Frontend vs backend in this project</h2>
+<ul>
+  <li><strong>Frontend (browser):</strong> React client components (<code>"use client"</code>) for forms and interactivity; they use <code>src/lib/supabase/client.ts</code>.</li>
+  <li><strong>Backend (server):</strong> Server Components and layouts use <code>src/lib/supabase/server.ts</code> with cookies to know who is logged in. Server Actions in <code>src/app/actions/</code> perform admin/operator updates after checking permissions.</li>
+  <li><strong>Middleware</strong> (<code>src/middleware.ts</code>) refreshes the Supabase session on requests. Admin/operator routes are enforced mainly in <strong>layouts</strong> (redirect if not allowed).</li>
+</ul>
+<p>Public tour listings use <code>fetchActiveTours()</code> in <code>src/lib/tours-query.ts</code> with an anonymous server client — RLS only allows reading <code>status = 'active'</code> tours.</p>
+
+<h2>5. How to access the admin account</h2>
+<div class="note">
+  Registration always creates an <strong>operator</strong> with <code>approval_status = 'pending'</code>. You cannot become admin through the sign-up form.
+</div>
+<p>A database trigger creates each profile as operator; admins are promoted manually.</p>
+<ol>
+  <li>Create a user in Supabase <strong>Authentication → Users</strong> (or register via the app and confirm email if required).</li>
+  <li>In <strong>SQL Editor</strong>, run (replace the UUID with that user’s id from Authentication → Users):</li>
+</ol>
+<pre>update public.profiles
+set role = 'admin', approval_status = 'approved'
+where id = '&lt;auth-user-uuid&gt;';</pre>
+<p>Then sign in at <code>/auth/login</code>. The login form sends users with <code>role === 'admin'</code> to <code>/admin</code>.</p>
+<p><code>src/app/admin/layout.tsx</code> requires an approved admin profile; others are redirected to login.</p>
+
+<h2>6. How email verification works</h2>
+<p>Handled by <strong>Supabase Auth</strong>, not custom email code in this repo.</p>
+<p><code>src/app/auth/register/register-form.tsx</code> calls <code>supabase.auth.signUp()</code>. If your Supabase project has <strong>Confirm email</strong> enabled (Authentication → Providers → Email), Supabase sends a confirmation link. Users must confirm before sign-in, depending on your settings.</p>
+<p>For local testing, you can confirm users in the dashboard or adjust email settings; re-enable confirmation for production.</p>
+
+<h2>7. Operator and tour approval</h2>
+<ul>
+  <li>Operators stay <code>pending</code> until an admin approves them in <code>/admin/operators</code> (see <code>src/app/actions/admin.ts</code>). RLS blocks tour creation until the operator is approved.</li>
+  <li>New tours are <code>pending</code> until an admin sets them <code>active</code> in <code>/admin/tours</code>; only <code>active</code> tours appear on the public site.</li>
+</ul>
+
+<h2>8. Running locally</h2>
+<ol>
+  <li><code>npm install</code></li>
+  <li>Copy <code>.env.example</code> to <code>.env.local</code> and add your Supabase URL and anon key.</li>
+  <li>Run the SQL migration in Supabase if needed.</li>
+  <li><code>npm run dev</code> — open the local URL (often <code>http://localhost:3000</code>).</li>
+</ol>
+
+<h2>9. Security notes</h2>
+<ul>
+  <li>Do not disable RLS without understanding the impact.</li>
+  <li>Keep real secrets in <code>.env.local</code> (not committed).</li>
+  <li>Service role keys (if ever used) must never ship to the browser.</li>
+</ul>
+
+<p style="margin-top:2rem;font-size:0.9rem;color:#555;"><em>Document matches the Travelpedia repository structure: Next.js App Router + Supabase.</em></p>
+
+</body>
+</html>

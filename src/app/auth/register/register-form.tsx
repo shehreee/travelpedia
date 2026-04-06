@@ -13,32 +13,37 @@ export function RegisterForm() {
     e.preventDefault();
     setMessage(null);
     setPending(true);
-    const form = e.currentTarget;
-    const email = String(form.email.value || "").trim();
-    const password = String(form.password.value || "");
-    const full_name = String(form.full_name.value || "").trim();
-    const phone = String(form.phone.value || "").trim();
-    const company_name = String(form.company_name.value || "").trim();
+    try {
+      const form = e.currentTarget;
+      const email = String(form.email.value || "").trim();
+      const password = String(form.password.value || "");
+      const full_name = String(form.full_name.value || "").trim();
+      const phone = String(form.phone.value || "").trim();
+      const company_name = String(form.company_name.value || "").trim();
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name,
-          phone,
-          company_name,
+      const supabase = createClient();
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name,
+            phone,
+            company_name,
+          },
         },
-      },
-    });
-    setPending(false);
-    if (error) {
-      setMessage(error.message);
-      return;
+      });
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      router.push("/auth/login?registered=1");
+    } catch {
+      setMessage("Signup failed due to a network or server issue. Please try again.");
+    } finally {
+      setPending(false);
     }
-    setMessage("Check your email to confirm your account, then sign in.");
-    router.push("/auth/login");
   }
 
   return (
@@ -99,7 +104,7 @@ export function RegisterForm() {
         disabled={pending}
         className="w-full rounded-md bg-tp-blue py-3 text-sm font-bold text-white hover:bg-tp-blue-hover disabled:opacity-60"
       >
-        {pending ? "Creating…" : "Register"}
+        {pending ? "Signing up…" : "Signup"}
       </button>
     </form>
   );

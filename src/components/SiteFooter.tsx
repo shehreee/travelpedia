@@ -8,9 +8,8 @@ export function SiteFooter() {
           <div>
             <p className="font-semibold text-tp-navy">Travelpedia</p>
             <p className="mt-2 max-w-sm text-sm text-tp-muted">
-              Discover fixed-departure group tours across Northern Pakistan. We connect
-              travelers with verified operators — inquiries only, no payments on the
-              platform.
+              Discover curated tours across Northern Pakistan. Travelpedia connects
+              travelers with verified operators through a simple inquiry experience.
             </p>
           </div>
           <div className="flex flex-wrap gap-8 text-sm">
@@ -33,10 +32,10 @@ export function SiteFooter() {
               <p className="font-medium text-tp-text">Legal</p>
               <ul className="mt-2 space-y-1 text-tp-muted">
                 <li>
-                  <span className="cursor-default">Terms (Phase 1)</span>
+                  <span className="cursor-default">Terms</span>
                 </li>
                 <li>
-                  <span className="cursor-default">Privacy (Phase 1)</span>
+                  <span className="cursor-default">Privacy</span>
                 </li>
               </ul>
             </div>

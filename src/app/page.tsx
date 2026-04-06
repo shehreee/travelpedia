@@ -16,11 +16,10 @@ export default async function HomePage() {
             Northern Pakistan · Group departures
           </p>
           <h1 className="mx-auto mt-3 max-w-3xl text-center text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
-            Find your next adventure — compare tours like on Booking and Agoda
+            Discover your next journey with Travelpedia
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-center text-base text-white/85 sm:text-lg">
-            Structured listings from verified operators. Send an inquiry in one click. No
-            payments on the platform (Phase 1).
+            Explore trusted tour listings from verified operators and connect directly.
           </p>
           <div className="mt-10">
             <HeroSearch />
@@ -75,22 +74,19 @@ export default async function HomePage() {
           <div>
             <h3 className="font-bold text-tp-navy">For travelers</h3>
             <p className="mt-2 text-sm text-tp-muted">
-              Search by destination and dates, compare price and inclusions, then send a
-              direct inquiry to the operator.
+              Search destinations, compare tours, and send direct inquiries in minutes.
             </p>
           </div>
           <div>
             <h3 className="font-bold text-tp-navy">For operators</h3>
             <p className="mt-2 text-sm text-tp-muted">
-              List group tours with clear policies. Receive qualified leads with contact
-              details in your dashboard.
+              Publish tour listings and manage quality leads from one dashboard.
             </p>
           </div>
           <div>
-            <h3 className="font-bold text-tp-navy">Phase 1 scope</h3>
+            <h3 className="font-bold text-tp-navy">Trusted platform</h3>
             <p className="mt-2 text-sm text-tp-muted">
-              Discovery and lead generation only — no reviews, payments, or instant booking
-              (per product doc).
+              Travelpedia supports discovery, operator validation, and transparent inquiries.
             </p>
           </div>
         </div>
