@@ -14,6 +14,15 @@ export function RegisterForm() {
     setMessage(null);
     setPending(true);
     try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      if (!supabaseUrl || !supabaseAnonKey) {
+        setMessage(
+          "Signup is not configured. Missing Supabase environment variables on this deployment.",
+        );
+        return;
+      }
+
       const form = e.currentTarget;
       const email = String(form.email.value || "").trim();
       const password = String(form.password.value || "");
@@ -39,8 +48,12 @@ export function RegisterForm() {
       }
 
       router.push("/auth/login?registered=1");
-    } catch {
-      setMessage("Signup failed due to a network or server issue. Please try again.");
+    } catch (err: unknown) {
+      const reason =
+        err instanceof Error && err.message
+          ? err.message
+          : "Network or server issue. Please try again.";
+      setMessage(`Signup failed: ${reason}`);
     } finally {
       setPending(false);
     }
