@@ -26,6 +26,16 @@ export function SiteFooter() {
                     For operators
                   </Link>
                 </li>
+                <li>
+                  <Link href="/auth/login" className="hover:text-tp-blue">
+                    Sign in
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/auth/forgot-password" className="hover:text-tp-blue">
+                    Forgot password
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>

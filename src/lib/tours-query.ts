@@ -1,4 +1,5 @@
 import { createAnonServerClient } from "@/lib/supabase/server";
+import { getDemoTourById, getDemoTours } from "@/lib/demo-tours";
 import type { Tour } from "@/types/database";
 
 export type TourFilters = {
@@ -12,7 +13,9 @@ export type TourFilters = {
 
 export async function fetchActiveTours(filters: TourFilters = {}) {
   const supabase = createAnonServerClient();
-  if (!supabase) return { data: [] as Tour[], error: null as string | null };
+  if (!supabase) {
+    return { data: getDemoTours(filters), error: null as string | null };
+  }
 
   let q = supabase
     .from("tours")
@@ -43,14 +46,18 @@ export async function fetchActiveTours(filters: TourFilters = {}) {
 
   const { data, error } = await q;
   if (error) {
-    return { data: [] as Tour[], error: error.message };
+    return { data: getDemoTours(filters), error: error.message };
   }
-  return { data: (data ?? []) as Tour[], error: null };
+  const tours = (data ?? []) as Tour[];
+  if (tours.length === 0) {
+    return { data: getDemoTours(filters), error: null };
+  }
+  return { data: tours, error: null };
 }
 
 export async function fetchTourById(id: string) {
   const supabase = createAnonServerClient();
-  if (!supabase) return { data: null as Tour | null, error: "not_configured" };
+  if (!supabase) return { data: getDemoTourById(id), error: null };
 
   const { data, error } = await supabase
     .from("tours")
@@ -59,6 +66,7 @@ export async function fetchTourById(id: string) {
     .eq("status", "active")
     .maybeSingle();
 
-  if (error) return { data: null, error: error.message };
+  if (error) return { data: getDemoTourById(id), error: error.message };
+  if (!data) return { data: getDemoTourById(id), error: null };
   return { data: data as Tour | null, error: null };
 }

@@ -1,11 +1,9 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
-  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,18 +26,42 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       return;
     }
 
-    const { data: profile } = await supabase
+    // Ensure the browser client has finished persisting the session to cookies
+    // before the server runs layout auth checks (avoids redirect loop / “reload”).
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData.session) {
+      setError("Session could not be established. Please try again.");
+      setPending(false);
+      return;
+    }
+
+    const { data: profile, error: profileErr } = await supabase
       .from("profiles")
       .select("role")
-      .single();
+      .maybeSingle();
 
-    if (profile?.role === "admin") {
-      router.push("/admin");
-    } else {
-      router.push(nextPath.startsWith("/") ? nextPath : "/operator/dashboard");
+    if (profileErr) {
+      setError(profileErr.message);
+      setPending(false);
+      return;
     }
-    router.refresh();
-    setPending(false);
+    if (!profile) {
+      setError(
+        "No operator profile found for this account. If you just signed up, confirm your email first or contact support.",
+      );
+      setPending(false);
+      return;
+    }
+
+    const dest =
+      profile.role === "admin"
+        ? "/admin"
+        : nextPath.startsWith("/")
+          ? nextPath
+          : "/operator/dashboard";
+
+    // Full navigation so middleware + server layouts reliably receive auth cookies.
+    window.location.assign(dest);
   }
 
   return (
@@ -55,7 +77,15 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         />
       </div>
       <div>
-        <label className="text-xs font-medium text-tp-muted">Password</label>
+        <div className="flex items-center justify-between gap-2">
+          <label className="text-xs font-medium text-tp-muted">Password</label>
+          <a
+            href="/auth/forgot-password"
+            className="text-xs font-semibold text-tp-blue hover:underline"
+          >
+            Forgot password?
+          </a>
+        </div>
         <input
           name="password"
           type="password"
