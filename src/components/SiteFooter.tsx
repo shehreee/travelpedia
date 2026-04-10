@@ -13,42 +13,54 @@ export function SiteFooter() {
             </p>
           </div>
           <div className="flex flex-wrap gap-8 text-sm">
-            <div>
+            <nav aria-label="Footer explore">
               <p className="font-medium text-tp-text">Explore</p>
-              <ul className="mt-2 space-y-1 text-tp-muted">
+              <ul className="mt-2 space-y-2 text-tp-muted">
                 <li>
-                  <Link href="/tours" className="hover:text-tp-blue">
+                  <Link
+                    href="/tours"
+                    className="rounded-sm text-tp-muted underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+                  >
                     All tours
                   </Link>
                 </li>
                 <li>
-                  <Link href="/auth/register" className="hover:text-tp-blue">
+                  <Link
+                    href="/auth/register"
+                    className="rounded-sm text-tp-muted underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+                  >
                     For operators
                   </Link>
                 </li>
                 <li>
-                  <Link href="/auth/login" className="hover:text-tp-blue">
+                  <Link
+                    href="/auth/login"
+                    className="rounded-sm text-tp-muted underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+                  >
                     Sign in
                   </Link>
                 </li>
                 <li>
-                  <Link href="/auth/forgot-password" className="hover:text-tp-blue">
+                  <Link
+                    href="/auth/forgot-password"
+                    className="rounded-sm text-tp-muted underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+                  >
                     Forgot password
                   </Link>
                 </li>
               </ul>
-            </div>
-            <div>
+            </nav>
+            <nav aria-label="Legal">
               <p className="font-medium text-tp-text">Legal</p>
-              <ul className="mt-2 space-y-1 text-tp-muted">
+              <ul className="mt-2 space-y-2 text-tp-muted">
                 <li>
-                  <span className="cursor-default">Terms</span>
+                  <span className="text-tp-muted">Terms (coming soon)</span>
                 </li>
                 <li>
-                  <span className="cursor-default">Privacy</span>
+                  <span className="text-tp-muted">Privacy (coming soon)</span>
                 </li>
               </ul>
-            </div>
+            </nav>
           </div>
         </div>
         <p className="mt-8 border-t border-tp-border pt-6 text-center text-xs text-tp-muted">

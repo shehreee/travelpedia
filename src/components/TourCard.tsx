@@ -9,14 +9,20 @@ export function TourCard({ tour, hideHutLink = false }: Props) {
   const company = tour.listing_company?.trim() || "Tour operator";
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-tp-border bg-white shadow-sm transition hover:shadow-md">
+    <article className="group flex flex-col overflow-hidden rounded-xl border border-tp-border bg-white shadow-sm transition-[box-shadow] duration-200 hover:shadow-md">
       <div className="relative h-40 bg-gradient-to-br from-tp-blue/90 to-tp-navy sm:h-44">
         <div className="absolute inset-0 flex flex-col justify-end p-4 text-white">
           <p className="text-xs font-medium uppercase tracking-wider text-white/80">
             {tour.departure_city} → {tour.destination}
           </p>
           <h2 className="mt-1 line-clamp-2 text-lg font-bold leading-snug">
-            {tour.destination}
+            <Link
+              href={`/tours/${tour.id}`}
+              className="rounded-sm text-white outline-none ring-offset-2 ring-offset-tp-navy focus-visible:ring-2 focus-visible:ring-tp-accent"
+            >
+              <span className="sr-only">View tour: </span>
+              {tour.destination}
+            </Link>
           </h2>
         </div>
       </div>
@@ -27,9 +33,10 @@ export function TourCard({ tour, hideHutLink = false }: Props) {
           ) : (
             <Link
               href={`/hut/${toHutSlug(company)}`}
-              className="font-medium text-tp-text hover:text-tp-blue hover:underline"
+              className="rounded-sm font-medium text-tp-text underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
             >
               {company}
+              <span className="sr-only"> — view operator HUT</span>
             </Link>
           )}
           <span className="mx-1">·</span>
@@ -53,7 +60,7 @@ export function TourCard({ tour, hideHutLink = false }: Props) {
           </div>
           <Link
             href={`/tours/${tour.id}`}
-            className="rounded-md bg-tp-blue px-4 py-2 text-sm font-semibold text-white hover:bg-tp-blue-hover"
+            className="rounded-md bg-tp-blue px-4 py-2.5 text-sm font-semibold text-white outline-none transition-colors hover:bg-tp-blue-hover focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
           >
             View deal
           </Link>

@@ -10,12 +10,18 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="bg-tp-navy pb-16 pt-10 text-white sm:pb-20 sm:pt-14">
+      <section
+        className="bg-tp-navy pb-16 pt-10 text-white sm:pb-20 sm:pt-14"
+        aria-labelledby="home-hero-heading"
+      >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-center text-sm font-medium uppercase tracking-widest text-tp-accent">
             Northern Pakistan · Group departures
           </p>
-          <h1 className="mx-auto mt-3 max-w-3xl text-center text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
+          <h1
+            id="home-hero-heading"
+            className="mx-auto mt-3 max-w-3xl text-center text-3xl font-bold leading-tight sm:text-4xl md:text-5xl"
+          >
             Discover your next journey with Travelpedia
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-center text-base text-white/85 sm:text-lg">
@@ -27,10 +33,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+      <section
+        className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16"
+        aria-labelledby="featured-heading"
+      >
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-tp-navy sm:text-3xl">
+            <h2 id="featured-heading" className="text-2xl font-bold text-tp-navy sm:text-3xl">
               Popular departures
             </h2>
             <p className="mt-1 text-tp-muted">
@@ -39,23 +48,30 @@ export default async function HomePage() {
           </div>
           <Link
             href="/tours"
-            className="text-sm font-semibold text-tp-blue hover:underline"
+            className="text-sm font-semibold text-tp-blue underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
           >
-            See all tours →
+            See all tours<span className="sr-only"> (opens tour list)</span>
+            <span aria-hidden> →</span>
           </Link>
         </div>
 
         {error && (
-          <p className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          <div
+            className="mt-6 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+            role="alert"
+          >
             Could not load tours: {error}. Check Supabase configuration.
-          </p>
+          </div>
         )}
 
         {!hasEnv && (
-          <p className="mt-6 rounded-lg border border-tp-border bg-white px-4 py-3 text-sm text-tp-muted">
+          <div
+            className="mt-6 rounded-lg border border-tp-border bg-white px-4 py-3 text-sm text-tp-muted"
+            role="status"
+          >
             Copy .env.example to .env.local and add your Supabase URL and anon key, then run
             the SQL in supabase/migrations.
-          </p>
+          </div>
         )}
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -69,7 +85,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-tp-border bg-white py-12 sm:py-16">
+      <section
+        className="border-t border-tp-border bg-white py-12 sm:py-16"
+        aria-labelledby="value-prop-heading"
+      >
+        <h2 id="value-prop-heading" className="sr-only">
+          Why Travelpedia
+        </h2>
         <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:grid-cols-3 sm:px-6">
           <div>
             <h3 className="font-bold text-tp-navy">For travelers</h3>

@@ -1,10 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export function HeroSearch() {
   const router = useRouter();
+  const destId = useId();
+  const fromId = useId();
+  const toId = useId();
   const [destination, setDestination] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -21,41 +24,49 @@ export function HeroSearch() {
   return (
     <form
       onSubmit={submit}
-      className="mx-auto flex max-w-4xl flex-col gap-3 rounded-lg border border-tp-border bg-tp-accent p-3 shadow-lg sm:flex-row sm:items-end sm:gap-2 sm:p-2"
+      aria-label="Search tours by destination and dates"
+      className="mx-auto flex max-w-4xl flex-col gap-3 rounded-xl border border-tp-border/80 bg-tp-accent p-3 shadow-lg sm:flex-row sm:items-end sm:gap-2 sm:p-3"
     >
-      <label className="flex-1 px-1 sm:px-2">
-        <span className="block text-xs font-semibold text-tp-navy">Destination</span>
+      <div className="flex-1 px-1 sm:px-2">
+        <label htmlFor={destId} className="block text-xs font-semibold text-tp-navy">
+          Destination
+        </label>
         <input
+          id={destId}
           type="text"
           placeholder="Hunza, Skardu, Swat…"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-          className="mt-1 w-full rounded border border-tp-border bg-white px-3 py-2.5 text-sm text-tp-text outline-none focus:ring-2 focus:ring-tp-blue"
+          autoComplete="off"
+          className="tp-input mt-1"
         />
-      </label>
-      <label className="sm:w-40">
-        <span className="block text-xs font-semibold text-tp-navy">Depart from</span>
+      </div>
+      <div className="sm:w-40">
+        <label htmlFor={fromId} className="block text-xs font-semibold text-tp-navy">
+          Depart from
+        </label>
         <input
+          id={fromId}
           type="date"
           value={from}
           onChange={(e) => setFrom(e.target.value)}
-          className="mt-1 w-full rounded border border-tp-border bg-white px-3 py-2.5 text-sm text-tp-text outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
-      </label>
-      <label className="sm:w-40">
-        <span className="block text-xs font-semibold text-tp-navy">Return by</span>
+      </div>
+      <div className="sm:w-40">
+        <label htmlFor={toId} className="block text-xs font-semibold text-tp-navy">
+          Return by
+        </label>
         <input
+          id={toId}
           type="date"
           value={to}
           onChange={(e) => setTo(e.target.value)}
-          className="mt-1 w-full rounded border border-tp-border bg-white px-3 py-2.5 text-sm text-tp-text outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
-      </label>
-      <button
-        type="submit"
-        className="rounded-md bg-tp-blue px-6 py-3 text-sm font-bold text-white hover:bg-tp-blue-hover sm:shrink-0"
-      >
-        Search
+      </div>
+      <button type="submit" className="tp-btn-primary w-full sm:w-auto sm:shrink-0">
+        Search tours
       </button>
     </form>
   );

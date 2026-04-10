@@ -24,8 +24,11 @@ export default async function TourDetailPage({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-      <Link href="/tours" className="text-sm font-medium text-tp-blue hover:underline">
-        ← Back to tours
+      <Link
+        href="/tours"
+        className="inline-flex text-sm font-medium text-tp-blue underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+      >
+        <span aria-hidden>← </span>Back to tours
       </Link>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-3">

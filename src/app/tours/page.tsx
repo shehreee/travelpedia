@@ -33,7 +33,7 @@ export default async function ToursPage({ searchParams }: Props) {
       </p>
 
       <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        <aside className="shrink-0 lg:w-72">
+        <aside className="shrink-0 lg:w-72" aria-label="Tour search filters">
           <ToursFilterForm
             initial={{
               destination,
@@ -45,11 +45,14 @@ export default async function ToursPage({ searchParams }: Props) {
             }}
           />
         </aside>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1" role="region" aria-label="Tour results">
           {error && (
-            <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <div
+              className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950"
+              role="alert"
+            >
               {error}
-            </p>
+            </div>
           )}
           <div className="grid gap-6 sm:grid-cols-2">
             {tours.length === 0 ? (

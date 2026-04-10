@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 import { useState } from "react";
 
 export function LoginForm({ nextPath }: { nextPath: string }) {
@@ -73,32 +74,36 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
           type="email"
           required
           autoComplete="email"
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
       </div>
       <div>
         <div className="flex items-center justify-between gap-2">
           <label className="text-xs font-medium text-tp-muted">Password</label>
-          <a
+          <Link
             href="/auth/forgot-password"
-            className="text-xs font-semibold text-tp-blue hover:underline"
+            className="rounded-sm text-xs font-semibold text-tp-blue underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
           >
             Forgot password?
-          </a>
+          </Link>
         </div>
         <input
           name="password"
           type="password"
           required
           autoComplete="current-password"
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-700" role="alert">
+          {error}
+        </p>
+      )}
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-md bg-tp-navy py-3 text-sm font-bold text-white hover:bg-tp-blue disabled:opacity-60"
+        className="min-h-11 w-full rounded-md bg-tp-navy py-3 text-sm font-bold text-white outline-none transition-colors hover:bg-tp-blue disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
       >
         {pending ? "Signing in…" : "Sign in"}
       </button>

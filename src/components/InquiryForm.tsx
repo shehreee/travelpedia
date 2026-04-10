@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { submitInquiry } from "@/app/actions/inquiry";
 
 type Props = {
@@ -9,6 +9,11 @@ type Props = {
 };
 
 export function InquiryForm({ tourId, tourTitle }: Props) {
+  const nameId = useId();
+  const phoneId = useId();
+  const seatsId = useId();
+  const messageId = useId();
+  const statusId = useId();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{
     type: "ok" | "err";
@@ -39,63 +44,80 @@ export function InquiryForm({ tourId, tourTitle }: Props) {
         Request seats on <span className="font-medium text-tp-text">{tourTitle}</span>. The
         operator will contact you directly.
       </p>
-      <form onSubmit={onSubmit} className="mt-4 space-y-3">
+      <form onSubmit={onSubmit} className="mt-4 space-y-4" aria-describedby={message ? statusId : undefined}>
         <input type="hidden" name="tourId" value={tourId} />
         <div>
-          <label className="text-xs font-medium text-tp-muted">Full name</label>
+          <label htmlFor={nameId} className="text-xs font-medium text-tp-muted">
+            Full name
+          </label>
           <input
+            id={nameId}
             name="name"
             required
-            className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+            autoComplete="name"
+            className="tp-input mt-1"
             placeholder="Your name"
           />
         </div>
         <div>
-          <label className="text-xs font-medium text-tp-muted">Phone (WhatsApp)</label>
+          <label htmlFor={phoneId} className="text-xs font-medium text-tp-muted">
+            Phone (WhatsApp)
+          </label>
           <input
+            id={phoneId}
             name="phone"
             type="tel"
             required
-            className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+            autoComplete="tel"
+            className="tp-input mt-1"
             placeholder="+92 3xx xxxxxxx"
           />
         </div>
         <div>
-          <label className="text-xs font-medium text-tp-muted">Seats required</label>
+          <label htmlFor={seatsId} className="text-xs font-medium text-tp-muted">
+            Seats required
+          </label>
           <input
+            id={seatsId}
             name="seats_requested"
             type="number"
             min={1}
             defaultValue={1}
             required
-            className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+            inputMode="numeric"
+            className="tp-input mt-1"
           />
         </div>
         <div>
-          <label className="text-xs font-medium text-tp-muted">Message (optional)</label>
+          <label htmlFor={messageId} className="text-xs font-medium text-tp-muted">
+            Message (optional)
+          </label>
           <textarea
+            id={messageId}
             name="message"
             rows={3}
-            className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+            className="tp-input mt-1 min-h-[5.5rem]"
             placeholder="Dietary needs, group type, questions…"
           />
         </div>
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-md bg-tp-navy py-3 text-sm font-bold text-white hover:bg-tp-blue disabled:opacity-60"
+          className="min-h-11 w-full rounded-md bg-tp-navy py-3 text-sm font-bold text-white outline-none transition-colors hover:bg-tp-blue disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
         >
           {pending ? "Sending…" : "Send inquiry"}
         </button>
+      </form>
+      <div id={statusId} className="mt-3 min-h-[1.25rem]" aria-live="polite" aria-atomic="true">
         {message && (
           <p
-            className={`text-sm ${message.type === "ok" ? "text-green-700" : "text-red-600"}`}
-            role="status"
+            className={`text-sm ${message.type === "ok" ? "text-green-800" : "text-red-700"}`}
+            role={message.type === "err" ? "alert" : "status"}
           >
             {message.text}
           </p>
         )}
-      </form>
+      </div>
     </div>
   );
 }

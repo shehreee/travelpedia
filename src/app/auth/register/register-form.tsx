@@ -66,7 +66,7 @@ export function RegisterForm() {
         <input
           name="company_name"
           required
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
       </div>
       <div>
@@ -74,7 +74,8 @@ export function RegisterForm() {
         <input
           name="full_name"
           required
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          autoComplete="name"
+          className="tp-input mt-1"
         />
       </div>
       <div>
@@ -83,7 +84,8 @@ export function RegisterForm() {
           name="phone"
           type="tel"
           required
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          autoComplete="tel"
+          className="tp-input mt-1"
         />
       </div>
       <div>
@@ -93,7 +95,7 @@ export function RegisterForm() {
           type="email"
           required
           autoComplete="email"
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
       </div>
       <div>
@@ -104,18 +106,21 @@ export function RegisterForm() {
           required
           minLength={6}
           autoComplete="new-password"
-          className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          className="tp-input mt-1"
         />
       </div>
       {message && (
-        <p className={`text-sm ${message.includes("Check") ? "text-green-700" : "text-red-600"}`}>
+        <p
+          className={`text-sm ${message.includes("Check") || message.includes("verify") ? "text-green-800" : "text-red-700"}`}
+          role="status"
+        >
           {message}
         </p>
       )}
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-md bg-tp-blue py-3 text-sm font-bold text-white hover:bg-tp-blue-hover disabled:opacity-60"
+        className="min-h-11 w-full rounded-md bg-tp-blue py-3 text-sm font-bold text-white outline-none transition-colors hover:bg-tp-blue-hover disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
       >
         {pending ? "Signing up…" : "Signup"}
       </button>

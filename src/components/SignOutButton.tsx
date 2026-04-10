@@ -19,7 +19,7 @@ export function SignOutButton({ className = "" }: Props) {
     <button
       type="button"
       onClick={() => void signOut()}
-      className={`rounded-md border border-tp-border px-3 py-2 font-medium text-tp-muted hover:bg-tp-surface ${className}`}
+      className={`min-h-11 rounded-md border border-tp-border px-3 py-2 font-medium text-tp-muted outline-none transition-colors hover:bg-tp-surface focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2 ${className}`}
     >
       Sign out
     </button>
