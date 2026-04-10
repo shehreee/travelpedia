@@ -1,17 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InquiryForm } from "@/components/InquiryForm";
+import { TourJsonLd } from "@/components/TourJsonLd";
+import { TourReviewsSection } from "@/components/TourReviewsSection";
 import { formatDate, formatPkr } from "@/lib/format";
 import { toHutSlug } from "@/lib/hut-slug";
+import { isUuid } from "@/lib/is-uuid";
+import { listingCategoryLabel } from "@/lib/listing-categories";
+import { fetchApprovedReviewsForTour } from "@/lib/reviews-query";
 import { fetchTourById } from "@/lib/tours-query";
 
 type Props = { params: Promise<{ id: string }> };
 
 export default async function TourDetailPage({ params }: Props) {
   const { id } = await params;
-  const { data: tour, error } = await fetchTourById(id);
+  const { data: tour } = await fetchTourById(id);
 
-  if (error === "not_configured" || !tour) {
+  if (!tour) {
     notFound();
   }
 
@@ -22,8 +27,15 @@ export default async function TourDetailPage({ params }: Props) {
   const isPast =
     tour.status === "closed" || tour.return_date < today;
 
+  const reviews = await fetchApprovedReviewsForTour(tour.id);
+  const canSubmitReview = tour.status === "active" && isUuid(tour.id);
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||
+    (typeof process.env.VERCEL_URL === "string" ? `https://${process.env.VERCEL_URL}` : "");
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      {siteUrl ? <TourJsonLd tour={tour} reviews={reviews} siteUrl={siteUrl} /> : null}
       <Link
         href="/tours"
         className="inline-flex text-sm font-medium text-tp-blue underline-offset-4 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
@@ -36,6 +48,12 @@ export default async function TourDetailPage({ params }: Props) {
           <div className="overflow-hidden rounded-xl border border-tp-border bg-white shadow-sm">
             <div className="bg-gradient-to-r from-tp-navy to-tp-blue px-6 py-10 text-white">
               <p className="text-sm font-medium text-white/80">
+                <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide">
+                  {listingCategoryLabel(tour.listing_category)}
+                </span>
+                <span className="mx-2 text-white/50" aria-hidden>
+                  ·
+                </span>
                 {tour.departure_city} → {tour.destination}
               </p>
               <h1 className="mt-2 text-3xl font-bold sm:text-4xl">{tour.destination}</h1>
@@ -127,6 +145,11 @@ export default async function TourDetailPage({ params }: Props) {
                   </a>
                 </section>
               )}
+              <TourReviewsSection
+                tourId={tour.id}
+                reviews={reviews}
+                canSubmit={canSubmitReview}
+              />
             </div>
           </div>
         </div>

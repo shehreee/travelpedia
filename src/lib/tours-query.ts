@@ -8,6 +8,8 @@ export type TourFilters = {
   to?: string;
   minPrice?: number;
   maxPrice?: number;
+  /** Matches `tours.listing_category` */
+  category?: string;
   sort?: "departure" | "price_asc";
 };
 
@@ -36,6 +38,9 @@ export async function fetchActiveTours(filters: TourFilters = {}) {
   }
   if (filters.maxPrice != null && !Number.isNaN(filters.maxPrice)) {
     q = q.lte("price", filters.maxPrice);
+  }
+  if (filters.category?.trim()) {
+    q = q.eq("listing_category", filters.category.trim());
   }
 
   if (filters.sort === "price_asc") {

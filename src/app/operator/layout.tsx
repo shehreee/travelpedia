@@ -24,12 +24,17 @@ export default async function OperatorLayout({
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("role, approval_status, company_name")
+    .select("role, approval_status, company_name, banned")
     .eq("id", user.id)
     .single();
 
   if (!profile || profile.role !== "operator") {
     redirect("/auth/login");
+  }
+
+  if (profile.banned) {
+    await supabase.auth.signOut();
+    redirect("/auth/login?reason=suspended");
   }
 
   return (

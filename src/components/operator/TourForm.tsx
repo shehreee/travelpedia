@@ -1,6 +1,7 @@
 "use client";
 
 import { saveTour } from "@/app/actions/operator-tours";
+import { LISTING_CATEGORIES } from "@/lib/listing-categories";
 import type { Tour } from "@/types/database";
 import { useState } from "react";
 
@@ -36,6 +37,21 @@ export function TourForm({ tour }: Props) {
             className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
             placeholder="Hunza Valley"
           />
+        </div>
+        <div className="sm:col-span-2">
+          <label className="text-xs font-medium text-tp-muted">Listing category</label>
+          <select
+            name="listing_category"
+            required
+            defaultValue={tour?.listing_category ?? "group_tour"}
+            className="mt-1 w-full rounded-md border border-tp-border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-tp-blue"
+          >
+            {LISTING_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="text-xs font-medium text-tp-muted">Departure city</label>

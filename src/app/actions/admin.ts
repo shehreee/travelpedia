@@ -73,3 +73,57 @@ export async function rejectTour(tourId: string) {
   revalidatePath("/");
   return { ok: true, message: "Tour rejected / closed." };
 }
+
+export async function setOperatorBanned(profileId: string, banned: boolean) {
+  const ctx = await requireAdmin();
+  if (!ctx.ok) return { ok: false, message: "Unauthorized." };
+  const { error } = await ctx.supabase
+    .from("profiles")
+    .update({ banned })
+    .eq("id", profileId)
+    .eq("role", "operator");
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/admin/operators");
+  return { ok: true, message: banned ? "Operator suspended." : "Suspension lifted." };
+}
+
+export async function approveTourReview(reviewId: string) {
+  const ctx = await requireAdmin();
+  if (!ctx.ok) return { ok: false, message: "Unauthorized." };
+  const { data: row, error: fe } = await ctx.supabase
+    .from("tour_reviews")
+    .select("tour_id")
+    .eq("id", reviewId)
+    .single();
+  if (fe || !row) return { ok: false, message: "Review not found." };
+
+  const { error } = await ctx.supabase
+    .from("tour_reviews")
+    .update({ status: "approved" })
+    .eq("id", reviewId);
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/admin/reviews");
+  revalidatePath(`/tours/${row.tour_id}`);
+  revalidatePath("/tours");
+  return { ok: true, message: "Review published." };
+}
+
+export async function rejectTourReview(reviewId: string) {
+  const ctx = await requireAdmin();
+  if (!ctx.ok) return { ok: false, message: "Unauthorized." };
+  const { data: row, error: fe } = await ctx.supabase
+    .from("tour_reviews")
+    .select("tour_id")
+    .eq("id", reviewId)
+    .single();
+  if (fe || !row) return { ok: false, message: "Review not found." };
+
+  const { error } = await ctx.supabase
+    .from("tour_reviews")
+    .update({ status: "rejected" })
+    .eq("id", reviewId);
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/admin/reviews");
+  revalidatePath(`/tours/${row.tour_id}`);
+  return { ok: true, message: "Review rejected." };
+}

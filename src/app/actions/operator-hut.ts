@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { toHutSlug } from "@/lib/hut-slug";
+import { hutUpdateSchema } from "@/lib/validations/schemas";
 import { revalidatePath } from "next/cache";
 
 export async function updateHutProfile(formData: FormData): Promise<{ ok: boolean; message: string }> {
@@ -21,15 +22,21 @@ export async function updateHutProfile(formData: FormData): Promise<{ ok: boolea
     return { ok: false, message: "Operator profile not found." };
   }
 
-  const company_name = String(formData.get("company_name") || "").trim();
-  const profile_photo_url = String(formData.get("profile_photo_url") || "").trim();
-  const hut_experience = String(formData.get("hut_experience") || "").trim();
-  const area_of_operation = String(formData.get("area_of_operation") || "").trim();
-  const phone = String(formData.get("phone") || "").trim();
+  const parsed = hutUpdateSchema.safeParse({
+    company_name: formData.get("company_name"),
+    profile_photo_url: formData.get("profile_photo_url"),
+    hut_experience: formData.get("hut_experience"),
+    area_of_operation: formData.get("area_of_operation"),
+    phone: formData.get("phone"),
+  });
 
-  if (!company_name) {
-    return { ok: false, message: "Company / brand name is required." };
+  if (!parsed.success) {
+    const msg = parsed.error.issues[0]?.message ?? "Check your profile details.";
+    return { ok: false, message: msg };
   }
+
+  const { company_name, phone, profile_photo_url, hut_experience, area_of_operation } =
+    parsed.data;
 
   const { error } = await supabase
     .from("profiles")

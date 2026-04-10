@@ -54,10 +54,20 @@ export function SiteFooter() {
               <p className="font-medium text-tp-text">Legal</p>
               <ul className="mt-2 space-y-2 text-tp-muted">
                 <li>
-                  <span className="text-tp-muted">Terms (coming soon)</span>
+                  <Link
+                    href="/terms"
+                    className="rounded-sm text-tp-muted underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+                  >
+                    Terms of service
+                  </Link>
                 </li>
                 <li>
-                  <span className="text-tp-muted">Privacy (coming soon)</span>
+                  <Link
+                    href="/privacy"
+                    className="rounded-sm text-tp-muted underline-offset-4 outline-none hover:text-tp-blue hover:underline focus-visible:ring-2 focus-visible:ring-tp-blue focus-visible:ring-offset-2"
+                  >
+                    Privacy policy
+                  </Link>
                 </li>
               </ul>
             </nav>

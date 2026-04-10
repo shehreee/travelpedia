@@ -2,13 +2,14 @@ import Link from "next/link";
 import { LoginForm } from "./login-form";
 
 type Props = {
-  searchParams: Promise<{ next?: string; registered?: string }>;
+  searchParams: Promise<{ next?: string; registered?: string; reason?: string }>;
 };
 
 export default async function LoginPage({ searchParams }: Props) {
   const sp = await searchParams;
   const next = typeof sp.next === "string" ? sp.next : "/operator/dashboard";
   const registered = sp.registered === "1";
+  const suspended = sp.reason === "suspended";
 
   return (
     <div className="mx-auto max-w-md px-4 py-12 sm:px-6">
@@ -19,6 +20,12 @@ export default async function LoginPage({ searchParams }: Props) {
       {registered && (
         <p className="mt-3 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
           Account created. Please verify your email, then sign in.
+        </p>
+      )}
+      {suspended && (
+        <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950">
+          Your session was ended because this operator account is suspended. Contact support if you
+          need help.
         </p>
       )}
       <div className="mt-8 rounded-xl border border-tp-border bg-white p-6 shadow-sm">

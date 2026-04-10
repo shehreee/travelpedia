@@ -1,6 +1,7 @@
 "use server";
 
 import { createAnonServerClient } from "@/lib/supabase/server";
+import { inquirySchema } from "@/lib/validations/schemas";
 
 export async function submitInquiry(formData: FormData): Promise<{
   ok: boolean;
@@ -11,22 +12,27 @@ export async function submitInquiry(formData: FormData): Promise<{
     return { ok: false, message: "Add Supabase keys to .env.local to enable inquiries." };
   }
 
-  const tourId = String(formData.get("tourId") || "").trim();
-  const name = String(formData.get("name") || "").trim();
-  const phone = String(formData.get("phone") || "").trim();
-  const message = String(formData.get("message") || "").trim();
-  const seats = Math.max(1, Number(formData.get("seats_requested")) || 1);
+  const parsed = inquirySchema.safeParse({
+    tourId: formData.get("tourId"),
+    name: formData.get("name"),
+    phone: formData.get("phone"),
+    message: formData.get("message"),
+    seats_requested: formData.get("seats_requested"),
+  });
 
-  if (!tourId || !name || !phone) {
-    return { ok: false, message: "Please fill in name, phone, and tour." };
+  if (!parsed.success) {
+    const msg = parsed.error.issues[0]?.message ?? "Please check the form.";
+    return { ok: false, message: msg };
   }
+
+  const { tourId, name, phone, message, seats_requested } = parsed.data;
 
   const { error } = await supabase.from("inquiries").insert({
     tour_id: tourId,
     name,
     phone,
     message: message || null,
-    seats_requested: seats,
+    seats_requested: seats_requested,
   });
 
   if (error) {

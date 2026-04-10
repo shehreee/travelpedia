@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { formatDate, formatPkr } from "@/lib/format";
 import { toHutSlug } from "@/lib/hut-slug";
+import { listingCategoryLabel } from "@/lib/listing-categories";
 import type { TourWithOperator } from "@/types/database";
 
 type Props = { tour: TourWithOperator; hideHutLink?: boolean };
@@ -43,6 +44,9 @@ export function TourCard({ tour, hideHutLink = false }: Props) {
           {tour.duration}
         </p>
         <div className="flex flex-wrap gap-2 text-xs text-tp-muted">
+          <span className="rounded-full bg-tp-surface px-2 py-0.5">
+            {listingCategoryLabel(tour.listing_category)}
+          </span>
           <span className="rounded-full bg-tp-surface px-2 py-0.5">
             Departs {formatDate(tour.departure_date)}
           </span>

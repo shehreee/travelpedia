@@ -1,12 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { tourSaveSchema } from "@/lib/validations/schemas";
 import { revalidatePath } from "next/cache";
-
-function parseNum(v: FormDataEntryValue | null) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
-}
 
 export async function saveTour(formData: FormData): Promise<{ ok: boolean; message: string }> {
   const supabase = await createClient();
@@ -30,45 +26,52 @@ export async function saveTour(formData: FormData): Promise<{ ok: boolean; messa
     profile.company_name?.trim() || profile.full_name?.trim() || "Tour operator";
 
   const id = String(formData.get("id") || "").trim();
-  const destination = String(formData.get("destination") || "").trim();
-  const departure_city = String(formData.get("departure_city") || "").trim();
-  const departure_date = String(formData.get("departure_date") || "").trim();
-  const return_date = String(formData.get("return_date") || "").trim();
-  const duration = String(formData.get("duration") || "").trim();
-  const price = parseNum(formData.get("price"));
-  const seats_total = parseNum(formData.get("seats_total"));
-  const itinerary = String(formData.get("itinerary") || "").trim();
-  const inclusions = String(formData.get("inclusions") || "").trim();
-  const exclusions = String(formData.get("exclusions") || "").trim();
-  const cancellation_policy = String(formData.get("cancellation_policy") || "").trim();
-  const whatsapp_contact = String(formData.get("whatsapp_contact") || "").trim();
-  const itinerary_pdf_path = String(formData.get("itinerary_pdf_path") || "").trim();
 
-  if (!destination || !departure_city || !departure_date || !return_date || !duration) {
-    return { ok: false, message: "Fill destination, cities, dates, and duration." };
+  const parsed = tourSaveSchema.safeParse({
+    destination: formData.get("destination"),
+    departure_city: formData.get("departure_city"),
+    departure_date: formData.get("departure_date"),
+    return_date: formData.get("return_date"),
+    duration: formData.get("duration"),
+    price: formData.get("price"),
+    seats_total: formData.get("seats_total"),
+    listing_category: formData.get("listing_category"),
+    itinerary: formData.get("itinerary"),
+    itinerary_pdf_path: formData.get("itinerary_pdf_path"),
+    inclusions: formData.get("inclusions"),
+    exclusions: formData.get("exclusions"),
+    cancellation_policy: formData.get("cancellation_policy"),
+    whatsapp_contact: formData.get("whatsapp_contact"),
+  });
+
+  if (!parsed.success) {
+    const msg = parsed.error.issues[0]?.message ?? "Check the tour form.";
+    return { ok: false, message: msg };
   }
-  if (price == null || price < 0) return { ok: false, message: "Enter a valid price." };
 
+  const d = parsed.data;
+  const seats_total = d.seats_total;
   const seats_remaining =
     seats_total != null && seats_total >= 0 ? seats_total : null;
 
   const row = {
     operator_id: user.id,
     listing_company,
-    destination,
-    departure_city,
-    departure_date,
-    return_date,
-    duration,
-    price,
+    destination: d.destination,
+    departure_city: d.departure_city,
+    departure_date: d.departure_date,
+    return_date: d.return_date,
+    duration: d.duration,
+    price: d.price,
     seats_total: seats_total != null && seats_total >= 0 ? seats_total : null,
     seats_remaining,
-    itinerary: itinerary || null,
-    itinerary_pdf_path: itinerary_pdf_path || null,
-    inclusions: inclusions || null,
-    exclusions: exclusions || null,
-    cancellation_policy: cancellation_policy || null,
-    whatsapp_contact: whatsapp_contact || null,
+    listing_category: d.listing_category,
+    itinerary: d.itinerary || null,
+    itinerary_pdf_path: d.itinerary_pdf_path || null,
+    inclusions: d.inclusions || null,
+    exclusions: d.exclusions || null,
+    cancellation_policy: d.cancellation_policy || null,
+    whatsapp_contact: d.whatsapp_contact || null,
     status: "pending" as const,
   };
 
@@ -98,6 +101,7 @@ export async function saveTour(formData: FormData): Promise<{ ok: boolean; messa
   revalidatePath("/operator/dashboard");
   revalidatePath("/tours");
   revalidatePath("/");
+  if (id) revalidatePath(`/tours/${id}`);
   return { ok: true, message: "Saved. Awaiting admin approval for publication." };
 }
 
@@ -118,5 +122,6 @@ export async function setTourClosed(tourId: string): Promise<{ ok: boolean; mess
   revalidatePath("/operator/dashboard");
   revalidatePath("/tours");
   revalidatePath("/");
+  revalidatePath(`/tours/${tourId}`);
   return { ok: true, message: "Tour marked as closed." };
 }

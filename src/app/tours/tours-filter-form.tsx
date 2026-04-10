@@ -1,5 +1,6 @@
 "use client";
 
+import { LISTING_CATEGORIES } from "@/lib/listing-categories";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 
@@ -9,6 +10,7 @@ type Initial = {
   to: string;
   minPrice: string;
   maxPrice: string;
+  category: string;
   sort: "departure" | "price_asc";
 };
 
@@ -20,6 +22,7 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
   const minId = useId();
   const maxId = useId();
   const sortId = useId();
+  const catId = useId();
   const [v, setV] = useState(initial);
 
   function apply(e: React.FormEvent) {
@@ -30,6 +33,7 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
     if (v.to) q.set("to", v.to);
     if (v.minPrice) q.set("minPrice", v.minPrice);
     if (v.maxPrice) q.set("maxPrice", v.maxPrice);
+    if (v.category) q.set("category", v.category);
     if (v.sort === "price_asc") q.set("sort", "price_asc");
     router.push(`/tours?${q.toString()}`);
   }
@@ -41,6 +45,7 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
       to: "",
       minPrice: "",
       maxPrice: "",
+      category: "",
       sort: "departure",
     });
     router.push("/tours");
@@ -116,6 +121,24 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
             className="tp-input mt-1"
           />
         </div>
+      </div>
+      <div>
+        <label htmlFor={catId} className="text-xs font-medium text-tp-muted">
+          Category
+        </label>
+        <select
+          id={catId}
+          value={v.category}
+          onChange={(e) => setV({ ...v, category: e.target.value })}
+          className="tp-input mt-1"
+        >
+          <option value="">All categories</option>
+          {LISTING_CATEGORIES.map((c) => (
+            <option key={c.value} value={c.value}>
+              {c.label}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label htmlFor={sortId} className="text-xs font-medium text-tp-muted">

@@ -36,9 +36,19 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       return;
     }
 
+    const {
+      data: { user: authed },
+    } = await supabase.auth.getUser();
+    if (!authed) {
+      setError("Could not verify your account. Please try again.");
+      setPending(false);
+      return;
+    }
+
     const { data: profile, error: profileErr } = await supabase
       .from("profiles")
-      .select("role")
+      .select("role, banned")
+      .eq("id", authed.id)
       .maybeSingle();
 
     if (profileErr) {
@@ -50,6 +60,13 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
       setError(
         "No operator profile found for this account. If you just signed up, confirm your email first or contact support.",
       );
+      setPending(false);
+      return;
+    }
+
+    if (profile.banned) {
+      await supabase.auth.signOut();
+      setError("This account has been suspended. Contact support if you believe this is a mistake.");
       setPending(false);
       return;
     }

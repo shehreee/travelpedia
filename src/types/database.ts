@@ -5,6 +5,8 @@ export type Profile = {
   phone: string | null;
   role: "operator" | "admin";
   approval_status: "pending" | "approved" | "rejected";
+  /** If true, operator cannot access dashboard (moderation). */
+  banned?: boolean | null;
   company_name: string | null;
   /** Public HUT logo / profile image URL */
   profile_photo_url?: string | null;
@@ -33,7 +35,20 @@ export type Tour = {
   exclusions: string | null;
   cancellation_policy: string | null;
   whatsapp_contact: string | null;
+  /** Marketplace category (tour listing type). */
+  listing_category?: string | null;
   status: "pending" | "active" | "closed";
+  created_at: string;
+};
+
+export type TourReview = {
+  id: string;
+  tour_id: string;
+  author_name: string;
+  author_email: string | null;
+  rating: number;
+  comment: string | null;
+  status: "pending" | "approved" | "rejected";
   created_at: string;
 };
 

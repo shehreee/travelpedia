@@ -4,7 +4,13 @@ import { DEMO_OPERATOR_IDS } from "@/lib/demo-huts";
 
 const now = "2026-04-06T00:00:00.000Z";
 
-export const demoTours: Tour[] = [
+const demoCategoryById: Record<string, string> = {
+  "demo-tour-002": "adventure",
+  "demo-tour-006": "weekend",
+  "demo-tour-014": "family",
+};
+
+const demoToursBase: Tour[] = [
   {
     id: "demo-tour-001",
     operator_id: DEMO_OPERATOR_IDS.summit,
@@ -491,6 +497,11 @@ export const demoTours: Tour[] = [
   },
 ];
 
+export const demoTours: Tour[] = demoToursBase.map((t) => ({
+  ...t,
+  listing_category: t.listing_category ?? demoCategoryById[t.id] ?? "group_tour",
+}));
+
 function sortTours(items: Tour[], sort: "departure" | "price_asc" = "departure"): Tour[] {
   const out = [...items];
   if (sort === "price_asc") {
@@ -522,6 +533,9 @@ export function getDemoTours(filters: TourFilters = {}): Tour[] {
   }
   if (filters.maxPrice != null && !Number.isNaN(filters.maxPrice)) {
     out = out.filter((t) => Number(t.price) <= filters.maxPrice!);
+  }
+  if (filters.category?.trim()) {
+    out = out.filter((t) => (t.listing_category ?? "group_tour") === filters.category);
   }
 
   return sortTours(out, filters.sort ?? "departure");

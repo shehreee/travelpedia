@@ -15,6 +15,7 @@ export default async function ToursPage({ searchParams }: Props) {
   const maxPrice = typeof sp.maxPrice === "string" ? Number(sp.maxPrice) : undefined;
   const sort =
     sp.sort === "price_asc" ? ("price_asc" as const) : ("departure" as const);
+  const category = typeof sp.category === "string" ? sp.category : "";
 
   const { data: tours, error } = await fetchActiveTours({
     destination: destination || undefined,
@@ -22,6 +23,7 @@ export default async function ToursPage({ searchParams }: Props) {
     to: to || undefined,
     minPrice: minPrice && !Number.isNaN(minPrice) ? minPrice : undefined,
     maxPrice: maxPrice && !Number.isNaN(maxPrice) ? maxPrice : undefined,
+    category: category || undefined,
     sort,
   });
 
@@ -41,6 +43,7 @@ export default async function ToursPage({ searchParams }: Props) {
               to,
               minPrice: minPrice && !Number.isNaN(minPrice) ? String(minPrice) : "",
               maxPrice: maxPrice && !Number.isNaN(maxPrice) ? String(maxPrice) : "",
+              category,
               sort: sort === "price_asc" ? "price_asc" : "departure",
             }}
           />
