@@ -1,5 +1,6 @@
 import { demoTours } from "@/lib/demo-tours";
-import { getDemoHutByOperatorId } from "@/lib/demo-huts";
+import { getDemoHutByOperatorId, getDemoHutBySlug } from "@/lib/demo-huts";
+import { isUuidLike, toHutSlug } from "@/lib/hut-slug";
 import { createAnonServerClient } from "@/lib/supabase/server";
 import type { Tour } from "@/types/database";
 import type { HutPublicProfile } from "@/types/hut";
@@ -33,14 +34,19 @@ function partitionHutTours(tours: Tour[]): HutToursPartition {
   return { live, past };
 }
 
-const hutProfileSelect =
+const hutProfileSelectBasic =
+  "id, company_name, full_name, email, phone, created_at, role, approval_status";
+const hutProfileSelectExtended =
   "id, company_name, full_name, email, phone, profile_photo_url, hut_experience, area_of_operation, created_at, role, approval_status";
 
-export async function fetchHutByOperatorId(
-  operatorId: string,
+export async function fetchHutByIdentifier(
+  identifier: string,
 ): Promise<{ profile: HutPublicProfile | null; tours: HutToursPartition; error: string | null }> {
-  const demoProfile = getDemoHutByOperatorId(operatorId);
-  const demoList = demoTours.filter((t) => t.operator_id === operatorId);
+  const ident = identifier.trim();
+  const isUuid = isUuidLike(ident);
+  const demoProfile = isUuid ? getDemoHutByOperatorId(ident) : getDemoHutBySlug(ident);
+  const demoOperatorId = demoProfile?.id ?? (isUuid ? ident : "");
+  const demoList = demoTours.filter((t) => t.operator_id === demoOperatorId);
   const demoPartition = partitionHutTours(demoList);
 
   const supabase = createAnonServerClient();
@@ -51,11 +57,75 @@ export async function fetchHutByOperatorId(
     return { profile: demoProfile, tours: demoPartition, error: null };
   }
 
-  const { data: row, error: pe } = await supabase
-    .from("profiles")
-    .select(hutProfileSelect)
-    .eq("id", operatorId)
-    .maybeSingle();
+  let row: {
+    id: string;
+    company_name: string | null;
+    full_name: string | null;
+    email: string | null;
+    phone: string | null;
+    profile_photo_url?: string | null;
+    hut_experience?: string | null;
+    area_of_operation?: string | null;
+    created_at: string;
+    role: string;
+    approval_status: string;
+  } | null = null;
+  let pe: { message: string } | null = null;
+
+  if (isUuid) {
+    const extended = await supabase
+      .from("profiles")
+      .select(hutProfileSelectExtended)
+      .eq("id", ident)
+      .maybeSingle();
+    if (extended.error && extended.error.message.includes("does not exist")) {
+      const basic = await supabase
+        .from("profiles")
+        .select(hutProfileSelectBasic)
+        .eq("id", ident)
+        .maybeSingle();
+      row = (basic.data as typeof row) ?? null;
+      pe = basic.error ? { message: basic.error.message } : null;
+    } else {
+      row = (extended.data as typeof row) ?? null;
+      pe = extended.error ? { message: extended.error.message } : null;
+    }
+  } else {
+    // Name-based lookup for user-friendly /hut/<company-name> links.
+    const basic = await supabase
+      .from("profiles")
+      .select(hutProfileSelectBasic)
+      .eq("role", "operator")
+      .eq("approval_status", "approved");
+    if (basic.error) {
+      pe = { message: basic.error.message };
+    } else {
+      const list = (basic.data ?? []) as Array<{
+        id: string;
+        company_name: string | null;
+        full_name: string | null;
+        email: string | null;
+        phone: string | null;
+        created_at: string;
+        role: string;
+        approval_status: string;
+      }>;
+      const found = list.find((p) => toHutSlug(p.company_name || p.full_name || "") === ident);
+      if (found) {
+        const extended = await supabase
+          .from("profiles")
+          .select(hutProfileSelectExtended)
+          .eq("id", found.id)
+          .maybeSingle();
+        if (extended.error && extended.error.message.includes("does not exist")) {
+          row = found;
+        } else {
+          row = (extended.data as typeof row) ?? found;
+          if (extended.error) pe = { message: extended.error.message };
+        }
+      }
+    }
+  }
 
   if (pe) {
     if (demoProfile) {
@@ -90,7 +160,7 @@ export async function fetchHutByOperatorId(
   const { data: tourRows, error: te } = await supabase
     .from("tours")
     .select("*")
-    .eq("operator_id", operatorId)
+    .eq("operator_id", profile.id)
     .in("status", ["active", "closed"]);
 
   if (te) {
@@ -104,3 +174,5 @@ export async function fetchHutByOperatorId(
   const tours = (tourRows ?? []) as Tour[];
   return { profile, tours: partitionHutTours(tours), error: null };
 }
+
+export const fetchHutByOperatorId = fetchHutByIdentifier;

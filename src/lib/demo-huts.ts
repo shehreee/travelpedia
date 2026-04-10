@@ -1,4 +1,5 @@
 import type { HutPublicProfile } from "@/types/hut";
+import { toHutSlug } from "@/lib/hut-slug";
 
 /** Matches demo tour operator_id values in demo-tours.ts */
 export const DEMO_OPERATOR_IDS = {
@@ -153,4 +154,11 @@ export function getDemoHutByOperatorId(operatorId: string): HutPublicProfile | n
 
 export function listDemoHutOperatorIds(): string[] {
   return demoHuts.map((h) => h.id);
+}
+
+export function getDemoHutBySlug(slug: string): HutPublicProfile | null {
+  const s = slug.trim().toLowerCase();
+  return (
+    demoHuts.find((h) => toHutSlug(h.company_name || h.full_name || "") === s) ?? null
+  );
 }

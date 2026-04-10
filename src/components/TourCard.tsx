@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatDate, formatPkr } from "@/lib/format";
+import { toHutSlug } from "@/lib/hut-slug";
 import type { TourWithOperator } from "@/types/database";
 
 type Props = { tour: TourWithOperator; hideHutLink?: boolean };
@@ -25,7 +26,7 @@ export function TourCard({ tour, hideHutLink = false }: Props) {
             <span className="font-medium text-tp-text">{company}</span>
           ) : (
             <Link
-              href={`/hut/${tour.operator_id}`}
+              href={`/hut/${toHutSlug(company)}`}
               className="font-medium text-tp-text hover:text-tp-blue hover:underline"
             >
               {company}

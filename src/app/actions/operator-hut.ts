@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { toHutSlug } from "@/lib/hut-slug";
 import { revalidatePath } from "next/cache";
 
 export async function updateHutProfile(formData: FormData): Promise<{ ok: boolean; message: string }> {
@@ -43,8 +44,8 @@ export async function updateHutProfile(formData: FormData): Promise<{ ok: boolea
 
   if (error) return { ok: false, message: error.message };
 
+  revalidatePath(`/hut/${toHutSlug(company_name)}`);
   revalidatePath("/operator/hut");
-  revalidatePath(`/hut/${user.id}`);
   revalidatePath("/tours");
   revalidatePath("/");
   return { ok: true, message: "HUT profile updated." };

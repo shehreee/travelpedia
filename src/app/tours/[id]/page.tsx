@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InquiryForm } from "@/components/InquiryForm";
 import { formatDate, formatPkr } from "@/lib/format";
+import { toHutSlug } from "@/lib/hut-slug";
 import { fetchTourById } from "@/lib/tours-query";
 
 type Props = { params: Promise<{ id: string }> };
@@ -37,7 +38,7 @@ export default async function TourDetailPage({ params }: Props) {
               <h1 className="mt-2 text-3xl font-bold sm:text-4xl">{tour.destination}</h1>
               <p className="mt-2 text-lg text-white/90">
                 <Link
-                  href={`/hut/${tour.operator_id}`}
+                  href={`/hut/${toHutSlug(company)}`}
                   className="hover:underline"
                 >
                   {company}

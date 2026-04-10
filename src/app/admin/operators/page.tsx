@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { toHutSlug } from "@/lib/hut-slug";
 import type { Profile } from "@/types/database";
 import { OperatorActions } from "./operator-actions";
 import Link from "next/link";
@@ -52,7 +53,7 @@ export default async function AdminOperatorsPage() {
                   <td className="px-4 py-3">
                     {p.approval_status === "approved" ? (
                       <Link
-                        href={`/hut/${p.id}`}
+                        href={`/hut/${toHutSlug(p.company_name || p.full_name || "operator")}`}
                         className="font-medium text-tp-blue hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"

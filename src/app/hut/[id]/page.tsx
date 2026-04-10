@@ -1,7 +1,7 @@
 import { TourCard } from "@/components/TourCard";
 import { HutProfilePhoto } from "@/components/HutProfilePhoto";
 import { formatDate } from "@/lib/format";
-import { fetchHutByOperatorId } from "@/lib/hut-query";
+import { fetchHutByIdentifier } from "@/lib/hut-query";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -10,7 +10,7 @@ type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { profile } = await fetchHutByOperatorId(id);
+  const { profile } = await fetchHutByIdentifier(id);
   const name = profile?.company_name?.trim() || profile?.full_name?.trim() || "Operator";
   return {
     title: `${name} — HUT | Travelpedia`,
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HutPage({ params }: Props) {
   const { id } = await params;
-  const { profile, tours, error } = await fetchHutByOperatorId(id);
+  const { profile, tours, error } = await fetchHutByIdentifier(id);
 
   if (!profile) {
     notFound();

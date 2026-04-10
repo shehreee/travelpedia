@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, formatPkr } from "@/lib/format";
+import { toHutSlug } from "@/lib/hut-slug";
 import type { Tour } from "@/types/database";
 import { TourActions } from "./tour-actions";
 
@@ -57,7 +58,7 @@ export default async function AdminToursPage() {
                   </td>
                   <td className="hidden px-4 py-3 text-tp-muted sm:table-cell">
                     <Link
-                      href={`/hut/${t.operator_id}`}
+                      href={`/hut/${toHutSlug(t.listing_company || "operator")}`}
                       className="text-tp-blue hover:underline"
                     >
                       {t.listing_company}
