@@ -4,6 +4,7 @@ import { isUuidLike, toHutSlug } from "@/lib/hut-slug";
 import { createAnonServerClient } from "@/lib/supabase/server";
 import type { Tour } from "@/types/database";
 import type { HutPublicProfile } from "@/types/hut";
+import { cache } from "react";
 
 export type HutToursPartition = { live: Tour[]; past: Tour[] };
 
@@ -39,7 +40,7 @@ const hutProfileSelectBasic =
 const hutProfileSelectExtended =
   "id, company_name, full_name, email, phone, profile_photo_url, hut_experience, area_of_operation, created_at, role, approval_status";
 
-export async function fetchHutByIdentifier(
+async function fetchHutByIdentifierUncached(
   identifier: string,
 ): Promise<{ profile: HutPublicProfile | null; tours: HutToursPartition; error: string | null }> {
   const ident = identifier.trim();
@@ -174,5 +175,8 @@ export async function fetchHutByIdentifier(
   const tours = (tourRows ?? []) as Tour[];
   return { profile, tours: partitionHutTours(tours), error: null };
 }
+
+/** Dedupes work when `generateMetadata` and the page both load the same HUT in one request. */
+export const fetchHutByIdentifier = cache(fetchHutByIdentifierUncached);
 
 export const fetchHutByOperatorId = fetchHutByIdentifier;

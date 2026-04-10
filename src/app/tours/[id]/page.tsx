@@ -14,7 +14,10 @@ type Props = { params: Promise<{ id: string }> };
 
 export default async function TourDetailPage({ params }: Props) {
   const { id } = await params;
-  const { data: tour } = await fetchTourById(id);
+  const [{ data: tour }, reviews] = await Promise.all([
+    fetchTourById(id),
+    fetchApprovedReviewsForTour(id),
+  ]);
 
   if (!tour) {
     notFound();
@@ -26,8 +29,6 @@ export default async function TourDetailPage({ params }: Props) {
   const today = new Date().toISOString().slice(0, 10);
   const isPast =
     tour.status === "closed" || tour.return_date < today;
-
-  const reviews = await fetchApprovedReviewsForTour(tour.id);
   const canSubmitReview = tour.status === "active" && isUuid(tour.id);
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ||

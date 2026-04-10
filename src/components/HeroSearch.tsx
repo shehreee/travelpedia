@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useId, useState, useTransition } from "react";
 
 export function HeroSearch() {
   const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const destId = useId();
   const fromId = useId();
   const toId = useId();
@@ -18,7 +19,9 @@ export function HeroSearch() {
     if (destination.trim()) q.set("destination", destination.trim());
     if (from) q.set("from", from);
     if (to) q.set("to", to);
-    router.push(`/tours?${q.toString()}`);
+    startTransition(() => {
+      router.push(`/tours?${q.toString()}`);
+    });
   }
 
   return (
@@ -65,8 +68,12 @@ export function HeroSearch() {
           className="tp-input mt-1"
         />
       </div>
-      <button type="submit" className="tp-btn-primary w-full sm:w-auto sm:shrink-0">
-        Search tours
+      <button
+        type="submit"
+        disabled={pending}
+        className="tp-btn-primary w-full sm:w-auto sm:shrink-0 disabled:opacity-60"
+      >
+        {pending ? "Loading…" : "Search tours"}
       </button>
     </form>
   );

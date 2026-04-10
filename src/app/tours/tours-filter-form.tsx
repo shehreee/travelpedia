@@ -2,7 +2,7 @@
 
 import { LISTING_CATEGORIES } from "@/lib/listing-categories";
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useId, useState, useTransition } from "react";
 
 type Initial = {
   destination: string;
@@ -16,6 +16,7 @@ type Initial = {
 
 export function ToursFilterForm({ initial }: { initial: Initial }) {
   const router = useRouter();
+  const [navPending, startTransition] = useTransition();
   const destId = useId();
   const fromId = useId();
   const toId = useId();
@@ -35,7 +36,9 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
     if (v.maxPrice) q.set("maxPrice", v.maxPrice);
     if (v.category) q.set("category", v.category);
     if (v.sort === "price_asc") q.set("sort", "price_asc");
-    router.push(`/tours?${q.toString()}`);
+    startTransition(() => {
+      router.push(`/tours?${q.toString()}`);
+    });
   }
 
   function clear() {
@@ -48,7 +51,9 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
       category: "",
       sort: "departure",
     });
-    router.push("/tours");
+    startTransition(() => {
+      router.push("/tours");
+    });
   }
 
   return (
@@ -157,10 +162,15 @@ export function ToursFilterForm({ initial }: { initial: Initial }) {
         </select>
       </div>
       <div className="flex gap-2 pt-2">
-        <button type="submit" className="tp-btn-primary flex-1">
-          Apply filters
+        <button type="submit" disabled={navPending} className="tp-btn-primary flex-1 disabled:opacity-60">
+          {navPending ? "Loading…" : "Apply filters"}
         </button>
-        <button type="button" onClick={clear} className="tp-btn-secondary shrink-0 px-4">
+        <button
+          type="button"
+          disabled={navPending}
+          onClick={clear}
+          className="tp-btn-secondary shrink-0 px-4 disabled:opacity-60"
+        >
           Clear
         </button>
       </div>

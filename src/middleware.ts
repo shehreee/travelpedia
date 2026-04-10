@@ -1,9 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
+/**
+ * Only refresh the Supabase session on routes that use server-side auth.
+ * Running `getUser()` on every public page (/, /tours, etc.) added a Supabase
+ * round-trip to *every* navigation and made the app feel sluggish (>1s taps).
+ */
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -11,22 +14,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const response = await updateSession(request);
-
-  if (pathname.startsWith("/operator") && !pathname.startsWith("/auth")) {
-    // Route protection is enforced in layouts via getUser + redirect
-    return response;
-  }
-
-  if (pathname.startsWith("/admin")) {
-    return response;
-  }
-
-  return response;
+  return updateSession(request);
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ["/operator/:path*", "/admin/:path*", "/auth/callback"],
 };
