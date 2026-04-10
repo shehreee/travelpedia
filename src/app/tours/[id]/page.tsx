@@ -17,6 +17,9 @@ export default async function TourDetailPage({ params }: Props) {
   const company = tour.listing_company?.trim() || "Tour operator";
   const wa = tour.whatsapp_contact?.replace(/\D/g, "");
   const waHref = wa ? `https://wa.me/${wa}` : null;
+  const today = new Date().toISOString().slice(0, 10);
+  const isPast =
+    tour.status === "closed" || tour.return_date < today;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
@@ -32,8 +35,20 @@ export default async function TourDetailPage({ params }: Props) {
                 {tour.departure_city} → {tour.destination}
               </p>
               <h1 className="mt-2 text-3xl font-bold sm:text-4xl">{tour.destination}</h1>
-              <p className="mt-2 text-lg text-white/90">{company}</p>
+              <p className="mt-2 text-lg text-white/90">
+                <Link
+                  href={`/hut/${tour.operator_id}`}
+                  className="hover:underline"
+                >
+                  {company}
+                </Link>
+              </p>
             </div>
+            {isPast && (
+              <div className="border-b border-white/20 bg-white/10 px-6 py-3 text-sm text-amber-100">
+                This trip has ended or is archived. Inquiry is only available for active listings.
+              </div>
+            )}
             <div className="grid gap-4 border-b border-tp-border p-6 sm:grid-cols-2">
               <div>
                 <p className="text-xs font-medium uppercase text-tp-muted">Departure</p>
@@ -123,7 +138,9 @@ export default async function TourDetailPage({ params }: Props) {
               Contact on WhatsApp
             </a>
           )}
-          <InquiryForm tourId={tour.id} tourTitle={tour.destination} />
+          {!isPast && (
+            <InquiryForm tourId={tour.id} tourTitle={tour.destination} />
+          )}
         </div>
       </div>
     </div>

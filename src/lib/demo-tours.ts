@@ -1,13 +1,13 @@
 import type { Tour } from "@/types/database";
 import type { TourFilters } from "@/lib/tours-query";
+import { DEMO_OPERATOR_IDS } from "@/lib/demo-huts";
 
 const now = "2026-04-06T00:00:00.000Z";
-const demoOperator = "00000000-0000-0000-0000-000000000001";
 
 export const demoTours: Tour[] = [
   {
     id: "demo-tour-001",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.summit,
     listing_company: "Summit Trails Co.",
     destination: "Hunza Valley Blossom Retreat",
     departure_city: "Lahore",
@@ -29,7 +29,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-002",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.northbound,
     listing_company: "Northbound Escapes",
     destination: "Skardu & Deosai Adventure",
     departure_city: "Islamabad",
@@ -50,7 +50,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-003",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.greenPeak,
     listing_company: "Travelpedia Partner - Green Peak",
     destination: "Fairy Meadows Basecamp Trip",
     departure_city: "Rawalpindi",
@@ -71,7 +71,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-004",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.riverstone,
     listing_company: "Riverstone Adventures",
     destination: "Naran Kaghan Family Escape",
     departure_city: "Lahore",
@@ -92,7 +92,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-005",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.baltistan,
     listing_company: "Baltistan Gateways",
     destination: "Khaplu Cultural & Forts Tour",
     departure_city: "Karachi",
@@ -113,7 +113,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-006",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.snowline,
     listing_company: "Snowline Journeys",
     destination: "Swat Kalam Mahodand Lake",
     departure_city: "Islamabad",
@@ -134,7 +134,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-007",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.glacier,
     listing_company: "Glacier Routes",
     destination: "Astore & Rama Meadows",
     departure_city: "Rawalpindi",
@@ -155,7 +155,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-008",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.alpineLink,
     listing_company: "Travelpedia Partner - Alpine Link",
     destination: "Neelum Valley Scenic Loop",
     departure_city: "Lahore",
@@ -176,7 +176,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-009",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.northbound,
     listing_company: "Northbound Escapes",
     destination: "Chitral & Kalash Valley",
     departure_city: "Islamabad",
@@ -197,7 +197,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-010",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.summit,
     listing_company: "Summit Trails Co.",
     destination: "Shogran Siri Paye Weekend",
     departure_city: "Islamabad",
@@ -218,7 +218,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-011",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.northbound,
     listing_company: "Riverstone Adventures",
     destination: "Hunza + Nagar Explorer",
     departure_city: "Karachi",
@@ -239,7 +239,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-012",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.baltistan,
     listing_company: "Baltistan Gateways",
     destination: "Skardu Cold Desert & Lakes",
     departure_city: "Lahore",
@@ -260,7 +260,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-013",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.snowline,
     listing_company: "Snowline Journeys",
     destination: "Kumrat Valley Camping",
     departure_city: "Islamabad",
@@ -281,7 +281,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-014",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.alpineArc,
     listing_company: "Alpine Arc Travels",
     destination: "Murree to Ayubia Nature Trail",
     departure_city: "Lahore",
@@ -302,7 +302,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-015",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.glacierNest,
     listing_company: "Travelpedia Partner - GlacierNest",
     destination: "Minimarg & Domel Expedition",
     departure_city: "Rawalpindi",
@@ -323,7 +323,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-016",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.greenPeak,
     listing_company: "Green Peak Adventures",
     destination: "Shandur Pass Road Journey",
     departure_city: "Islamabad",
@@ -344,7 +344,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-017",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.alpineLink,
     listing_company: "Alpine Link",
     destination: "Babusar Top Explorer",
     departure_city: "Lahore",
@@ -365,7 +365,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-018",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.summit,
     listing_company: "Summit Trails Co.",
     destination: "Autumn Hunza Colors Tour",
     departure_city: "Karachi",
@@ -386,7 +386,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-019",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.northbound,
     listing_company: "Northbound Escapes",
     destination: "Gilgit City + Naltar Valley",
     departure_city: "Islamabad",
@@ -407,7 +407,7 @@ export const demoTours: Tour[] = [
   },
   {
     id: "demo-tour-020",
-    operator_id: demoOperator,
+    operator_id: DEMO_OPERATOR_IDS.riverstone,
     listing_company: "Riverstone Adventures",
     destination: "Patriata Weekend Escape",
     departure_city: "Rawalpindi",
@@ -424,6 +424,69 @@ export const demoTours: Tour[] = [
     cancellation_policy: "85% refund up to 48 hours before departure.",
     whatsapp_contact: "923000002222",
     status: "active",
+    created_at: now,
+  },
+  {
+    id: "demo-tour-past-001",
+    operator_id: DEMO_OPERATOR_IDS.summit,
+    listing_company: "Summit Trails Co.",
+    destination: "Classic Hunza Autumn (completed)",
+    departure_city: "Lahore",
+    departure_date: "2025-10-05",
+    return_date: "2025-10-12",
+    duration: "8 days / 7 nights",
+    price: 89500,
+    seats_total: 22,
+    seats_remaining: 0,
+    itinerary: "Completed departure — Hunza loop with Attabad and Baltit Fort.",
+    itinerary_pdf_path: null,
+    inclusions: "Transport, hotel, meals as per plan.",
+    exclusions: "Personal expenses.",
+    cancellation_policy: "Archived listing.",
+    whatsapp_contact: "923001112233",
+    status: "closed",
+    created_at: now,
+  },
+  {
+    id: "demo-tour-past-002",
+    operator_id: DEMO_OPERATOR_IDS.riverstone,
+    listing_company: "Riverstone Adventures",
+    destination: "Swat Spring Family Week (completed)",
+    departure_city: "Islamabad",
+    departure_date: "2025-04-10",
+    return_date: "2025-04-14",
+    duration: "5 days / 4 nights",
+    price: 46500,
+    seats_total: 28,
+    seats_remaining: 0,
+    itinerary: "Completed — Malam Jabba and Kalam highlights.",
+    itinerary_pdf_path: null,
+    inclusions: "Transport, hotel, breakfast.",
+    exclusions: "Lunches.",
+    cancellation_policy: "Archived listing.",
+    whatsapp_contact: "923034445566",
+    status: "closed",
+    created_at: now,
+  },
+  {
+    id: "demo-tour-past-003",
+    operator_id: DEMO_OPERATOR_IDS.northbound,
+    listing_company: "Northbound Escapes",
+    destination: "Skardu Winter Preview (completed)",
+    departure_city: "Karachi",
+    departure_date: "2025-02-01",
+    return_date: "2025-02-08",
+    duration: "8 days / 7 nights",
+    price: 102000,
+    seats_total: 18,
+    seats_remaining: 0,
+    itinerary: "Completed — Skardu city, Shigar, cold desert.",
+    itinerary_pdf_path: null,
+    inclusions: "Flights not included; ground package only.",
+    exclusions: "Airfare.",
+    cancellation_policy: "Archived listing.",
+    whatsapp_contact: "923012223344",
+    status: "closed",
     created_at: now,
   },
 ];
@@ -465,5 +528,5 @@ export function getDemoTours(filters: TourFilters = {}): Tour[] {
 }
 
 export function getDemoTourById(id: string): Tour | null {
-  return demoTours.find((t) => t.id === id && t.status === "active") ?? null;
+  return demoTours.find((t) => t.id === id) ?? null;
 }

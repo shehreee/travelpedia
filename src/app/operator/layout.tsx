@@ -70,6 +70,12 @@ export default async function OperatorLayout({
           >
             Inquiries
           </Link>
+          <Link
+            href="/operator/hut"
+            className="rounded-md px-3 py-2 font-medium text-tp-text hover:bg-tp-surface"
+          >
+            Your HUT
+          </Link>
           <SignOutButton />
         </nav>
       </div>

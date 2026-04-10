@@ -63,7 +63,7 @@ export async function fetchTourById(id: string) {
     .from("tours")
     .select("*")
     .eq("id", id)
-    .eq("status", "active")
+    .in("status", ["active", "closed"])
     .maybeSingle();
 
   if (error) return { data: getDemoTourById(id), error: error.message };

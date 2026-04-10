@@ -6,6 +6,12 @@ export type Profile = {
   role: "operator" | "admin";
   approval_status: "pending" | "approved" | "rejected";
   company_name: string | null;
+  /** Public HUT logo / profile image URL */
+  profile_photo_url?: string | null;
+  /** Short bio / experience text for HUT */
+  hut_experience?: string | null;
+  /** Regions served, shown on HUT */
+  area_of_operation?: string | null;
   created_at: string;
 };
 

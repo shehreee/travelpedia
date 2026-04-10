@@ -2,9 +2,9 @@ import Link from "next/link";
 import { formatDate, formatPkr } from "@/lib/format";
 import type { TourWithOperator } from "@/types/database";
 
-type Props = { tour: TourWithOperator };
+type Props = { tour: TourWithOperator; hideHutLink?: boolean };
 
-export function TourCard({ tour }: Props) {
+export function TourCard({ tour, hideHutLink = false }: Props) {
   const company = tour.listing_company?.trim() || "Tour operator";
 
   return (
@@ -21,7 +21,16 @@ export function TourCard({ tour }: Props) {
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <p className="text-sm text-tp-muted">
-          <span className="font-medium text-tp-text">{company}</span>
+          {hideHutLink ? (
+            <span className="font-medium text-tp-text">{company}</span>
+          ) : (
+            <Link
+              href={`/hut/${tour.operator_id}`}
+              className="font-medium text-tp-text hover:text-tp-blue hover:underline"
+            >
+              {company}
+            </Link>
+          )}
           <span className="mx-1">·</span>
           {tour.duration}
         </p>

@@ -56,7 +56,12 @@ export default async function AdminToursPage() {
                     )}
                   </td>
                   <td className="hidden px-4 py-3 text-tp-muted sm:table-cell">
-                    {t.listing_company}
+                    <Link
+                      href={`/hut/${t.operator_id}`}
+                      className="text-tp-blue hover:underline"
+                    >
+                      {t.listing_company}
+                    </Link>
                   </td>
                   <td className="px-4 py-3 text-tp-muted">{formatDate(t.departure_date)}</td>
                   <td className="px-4 py-3">{formatPkr(Number(t.price))}</td>
